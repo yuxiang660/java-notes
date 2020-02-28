@@ -269,3 +269,62 @@ public class Pair<T> {
     - `Set`接口：一种保证没有重复元素的集合
     - `Map`接口：一种映射集合
 - `Collection`是除`Map`外所有其他集合类的根接口。
+
+# Maven
+- 依赖关系Scope
+    - compile - 编译时需要用到该jar包（默认）
+    - test - 编译Test时需要用到该jar包
+    - runtime - 编译时不需要，但运行时需要用到
+    - provided - 编译时需要用到，但运行时由JDK或某个服务器提供
+- 常用命令
+    - mvn clean
+    - mvn clean compile
+    - mvn clean test
+    - mvn clean package
+- Maven内置插件
+    - clean : for clean
+    - compiler : for compile
+    - surefire : for test
+    - jar : for package
+- package打包类型
+    - pom ：pom层级结构
+    - jar : 默认类型
+    - war ：需要部署的项目打包成war，如果只是内部调用或者时作为服务使用，则推荐打包成jar类型。
+## 如何创建Maven自定义插件
+使用`maven-shade-plugin`创建一个可执行的jar，要使用这个插件，需要在`pom.xml`中声明它：
+- 插件声明
+    ```xml
+    <project>
+        ...
+        <build>
+            <plugins>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-shade-plugin</artifactId>
+                    <version>3.2.1</version>
+                    <executions>
+                        <execution>
+                            <phase>package</phase>
+                            <goals>
+                                <goal>shade</goal>
+                            </goals>
+                            <configuration>
+                                ...
+                            </configuration>
+                        </execution>
+                    </executions>
+                </plugin>
+            </plugins>
+        </build>
+    </project>
+    ```
+- 配置插件
+```xml
+<configuration>
+    <transformers>
+        <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
+            <mainClass>com.itranswarp.learnjava.Main</mainClass>
+        </transformer>
+    </transformers>
+</configuration>
+```
